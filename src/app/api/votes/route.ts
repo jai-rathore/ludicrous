@@ -8,28 +8,52 @@ interface VoteData {
   };
 }
 
-// Create Redis client
-let redis: ReturnType<typeof createClient>;
+// Create Redis client function with connection handling
+async function getRedisClient() {
+  try {
+    if (!process.env.REDIS_URL) {
+      console.error('REDIS_URL not found in environment variables');
+      return null;
+    }
 
-// Initialize Redis client
-try {
-  redis = createClient({
-    url: process.env.REDIS_URL
-  });
+    const client = createClient({
+      url: process.env.REDIS_URL,
+      socket: {
+        connectTimeout: 10000, // 10 seconds
+        reconnectStrategy: (retries) => {
+          if (retries > 3) {
+            console.error(`Redis connection failed after ${retries} retries`);
+            return false;
+          }
+          return Math.min(retries * 100, 3000); // Incremental backoff
+        }
+      }
+    });
 
-  // Connect to Redis
-  await redis.connect();
-} catch (error) {
-  console.error('Redis connection error:', error);
+    client.on('error', (err) => console.error('Redis Client Error:', err));
+    client.on('connect', () => console.log('Redis Client Connected'));
+
+    if (!client.isOpen) {
+      await client.connect();
+    }
+
+    return client;
+  } catch (error) {
+    console.error('Redis connection error:', error);
+    return null;
+  }
 }
 
 export async function GET() {
-  if (!redis?.isOpen) {
-    return NextResponse.json({ error: 'Redis client not connected' }, { status: 500 });
-  }
-
   try {
+    const redis = await getRedisClient();
+    if (!redis) {
+      console.error('Failed to create Redis client');
+      return NextResponse.json({ error: 'Database connection failed' }, { status: 500 });
+    }
+
     const votes = await redis.get('player-votes');
+    await redis.quit(); // Properly close the connection
     return NextResponse.json({ votes: votes ? JSON.parse(votes) : {} });
   } catch (error) {
     console.error('Redis GET error:', error);
@@ -38,11 +62,13 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  if (!redis?.isOpen) {
-    return NextResponse.json({ error: 'Redis client not connected' }, { status: 500 });
-  }
-
   try {
+    const redis = await getRedisClient();
+    if (!redis) {
+      console.error('Failed to create Redis client');
+      return NextResponse.json({ error: 'Database connection failed' }, { status: 500 });
+    }
+
     const { playerId, voteType } = await request.json();
     const playerIdString = playerId.toString();
     
@@ -62,9 +88,15 @@ export async function POST(request: Request) {
       votes[playerIdString].downvotes += 1;
     }
     
-    // Save updated votes
-    await redis.set('player-votes', JSON.stringify(votes));
-    
+    // Save updated votes with a timeout
+    await Promise.race([
+      redis.set('player-votes', JSON.stringify(votes)),
+      new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('Redis set operation timed out')), 5000)
+      )
+    ]);
+
+    await redis.quit(); // Properly close the connection
     return NextResponse.json({ votes });
   } catch (error) {
     console.error('Redis POST error:', error);

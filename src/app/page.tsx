@@ -33,18 +33,24 @@ const PLAYERS: Player[] = [
 export default function Home() {
   const [players, setPlayers] = useState<Player[]>(PLAYERS);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   // Fetch initial votes
   useEffect(() => {
     const fetchVotes = async () => {
       try {
         const response = await fetch('/api/votes');
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+        }
         const data = await response.json();
         if (data.votes) {
           updatePlayersWithVotes(data.votes);
         }
       } catch (error) {
         console.error('Failed to fetch votes:', error);
+        setError(error instanceof Error ? error.message : 'Failed to fetch votes');
       } finally {
         setLoading(false);
       }
@@ -71,12 +77,18 @@ export default function Home() {
         body: JSON.stringify({ playerId: id, voteType }),
       });
 
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+      }
+
       const data = await response.json();
       if (data.votes) {
         updatePlayersWithVotes(data.votes);
       }
     } catch (error) {
       console.error('Failed to update vote:', error);
+      setError(error instanceof Error ? error.message : 'Failed to update vote');
     }
   };
 
@@ -99,6 +111,12 @@ export default function Home() {
         <h1 className="text-3xl font-bold text-center mb-8 text-gray-900">
           Ludicrous Batting Order
         </h1>
+
+        {error && (
+          <div className="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
+            {error}
+          </div>
+        )}
 
         <div className="bg-white rounded-lg shadow-md overflow-hidden">
           <h2 className="text-xl font-semibold p-4 bg-gray-100 text-gray-800">Current Batting Order</h2>
