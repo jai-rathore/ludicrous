@@ -159,50 +159,50 @@ export default function BattingOrderCard({
 
   return (
     <div className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow overflow-hidden">
-      <div className="p-2 bg-gray-50 flex items-center justify-between border-b">
+      <div className="p-4 bg-gray-50 flex items-center justify-between border-b">
         {isUserOwner ? (
           <div className="flex items-center gap-2">
             {userPhotoURL && (
               <img
                 src={userPhotoURL}
                 alt={userName || "Your"}
-                className="w-6 h-6 rounded-full"
+                className="w-8 h-8 rounded-full"
               />
             )}
-            <span className="text-sm font-medium text-black">{userName || 'Your List'}</span>
+            <span className="text-base font-medium text-black">{userName || 'Your List'}</span>
           </div>
         ) : (
-          <span className="text-sm font-medium text-black">#{id.slice(0, 6)}</span>
+          <span className="text-base font-medium text-black">#{id.slice(0, 6)}</span>
         )}
         <div className="flex items-center gap-2">
-          <span className="text-sm font-medium text-black">{netVotes > 0 ? '+' : ''}{netVotes}</span>
+          <span className="text-base font-medium text-black">{netVotes > 0 ? '+' : ''}{netVotes}</span>
           {!isUserOwner && user && (
             <div className="flex gap-1">
               <button
                 onClick={() => handleVote('up')}
                 disabled={isVoting}
-                className={`p-1 rounded-full ${
+                className={`p-2 rounded-full ${
                   hasUpvoted 
                     ? 'bg-green-100 text-green-600' 
                     : 'bg-gray-100 text-black hover:bg-gray-200'
                 }`}
                 aria-label="Upvote"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <polyline points="18 15 12 9 6 15"></polyline>
                 </svg>
               </button>
               <button
                 onClick={() => handleVote('down')}
                 disabled={isVoting}
-                className={`p-1 rounded-full ${
+                className={`p-2 rounded-full ${
                   hasDownvoted 
                     ? 'bg-red-100 text-red-600' 
                     : 'bg-gray-100 text-black hover:bg-gray-200'
                 }`}
                 aria-label="Downvote"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <polyline points="6 9 12 15 18 9"></polyline>
                 </svg>
               </button>
@@ -212,15 +212,15 @@ export default function BattingOrderCard({
       </div>
       
       {error && (
-        <div className="px-2 py-1 bg-red-50 text-red-700 text-xs border-b border-red-100">
+        <div className="px-4 py-2 bg-red-50 text-red-700 text-sm border-b border-red-100">
           {error}
         </div>
       )}
       
-      <div className="p-2 space-y-1">
+      <div className="p-4 space-y-2">
         {sortedPlayers.map((player) => (
-          <div key={player.id} className="flex items-center gap-2 text-sm">
-            <span className="w-5 h-5 flex-shrink-0 flex items-center justify-center bg-blue-600 text-white rounded-full text-xs">
+          <div key={player.id} className="flex items-center gap-3 text-base">
+            <span className="w-7 h-7 flex-shrink-0 flex items-center justify-center bg-blue-600 text-white rounded-full text-sm font-medium">
               {player.position}
             </span>
             <span className="text-black">{player.name}</span>
@@ -229,21 +229,21 @@ export default function BattingOrderCard({
       </div>
 
       <div className="border-t">
-        <div className="p-2 space-y-2">
+        <div className="p-4 space-y-3">
           {comments.length > 0 && (
-            <div className="space-y-2">
+            <div className="space-y-3">
               {comments.map((comment) => (
-                <div key={comment.id} className="text-sm border-l-2 border-blue-200 pl-2">
+                <div key={comment.id} className="text-base border-l-2 border-blue-200 pl-3">
                   <p className="text-black">{comment.text}</p>
-                  <div className="flex items-center gap-2 mt-1">
+                  <div className="flex items-center gap-2 mt-2">
                     {comment.user?.photoURL && (
                       <img 
                         src={comment.user.photoURL} 
                         alt={comment.user.displayName || 'User'} 
-                        className="w-5 h-5 rounded-full"
+                        className="w-6 h-6 rounded-full"
                       />
                     )}
-                    <p className="text-xs text-black">
+                    <p className="text-sm text-gray-600">
                       {comment.user?.displayName || 'Anonymous'} • {formatDate(comment.createdAt)}
                     </p>
                   </div>
@@ -259,13 +259,13 @@ export default function BattingOrderCard({
                 value={newComment}
                 onChange={(e) => setNewComment(e.target.value)}
                 placeholder="Add a comment..."
-                className="flex-1 text-sm border rounded px-2 py-1 text-black placeholder:text-black/70"
+                className="flex-1 text-base border rounded-lg px-3 py-2 text-black placeholder:text-gray-500"
                 disabled={isSubmittingComment}
               />
               <button
                 type="submit"
                 disabled={isSubmittingComment || !newComment.trim()}
-                className="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 disabled:bg-blue-300"
+                className="px-4 py-2 bg-blue-600 text-white text-base rounded-lg hover:bg-blue-700 disabled:bg-blue-300 font-medium"
               >
                 {isSubmittingComment ? '...' : 'Post'}
               </button>
@@ -274,11 +274,11 @@ export default function BattingOrderCard({
         </div>
       </div>
 
-      <div className="px-2 py-1 bg-gray-50 border-t flex justify-end items-center">
+      <div className="px-4 py-3 bg-gray-50 border-t flex justify-end items-center">
         {isUserOwner && (
           <button
             onClick={handleEdit}
-            className="text-sm text-blue-600 hover:text-blue-700"
+            className="text-sm text-blue-600 hover:text-blue-700 font-medium"
           >
             Edit
           </button>

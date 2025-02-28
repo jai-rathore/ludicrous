@@ -9,7 +9,7 @@ function CreateOrderContent() {
   const { user, loading } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const editId = searchParams.get('edit');
+  const editId = searchParams.get('edit') || undefined;
 
   // Only check for existing order if not in edit mode
   useEffect(() => {
@@ -59,14 +59,16 @@ function CreateOrderContent() {
 
 export default function CreateOrderPage() {
   return (
-    <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-16 h-16 border-t-4 border-blue-500 border-solid rounded-full animate-spin mx-auto"></div>
-          <p className="mt-4 text-black">Loading...</p>
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="text-center">
+            <div className="w-16 h-16 border-t-4 border-blue-500 border-solid rounded-full animate-spin mx-auto"></div>
+            <p className="mt-4 text-black">Loading...</p>
+          </div>
         </div>
-      </div>
-    }>
+      }
+    >
       <CreateOrderContent />
     </Suspense>
   );

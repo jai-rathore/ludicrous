@@ -27,18 +27,22 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-50 text-gray-900`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-50 text-gray-900 min-h-screen`}
       >
         <AuthProvider>
-          <header className="sticky top-0 z-50 w-full border-b bg-white shadow-sm backdrop-blur p-4">
-            <div className="container flex items-center justify-between">
-              <h1 className="text-xl font-bold text-gray-900">Ludicrous Batting Order</h1>
+          <header className="sticky top-0 z-50 w-full border-b bg-white/80 shadow-sm backdrop-blur-md">
+            <div className="container mx-auto px-4 py-3 flex items-center justify-between max-w-7xl">
+              <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
+                Team Ludicrous
+              </h1>
               <SignIn />
             </div>
           </header>
-          <main className="container mx-auto p-4">
-            {children}
-          </main>
+          <div className="container mx-auto max-w-7xl">
+            <main className="px-4 py-6">
+              {children}
+            </main>
+          </div>
         </AuthProvider>
       </body>
     </html>

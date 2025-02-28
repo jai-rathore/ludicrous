@@ -84,50 +84,74 @@ export default function Home() {
 
   return (
     <div>
+      <div className="bg-white border-b">
+        <div className="py-8 mb-8">
+          <div className="max-w-4xl">
+            <h2 className="text-sm font-medium text-blue-600 mb-3">Saturday Morning Game vs CSK at Sigman BB, Fremont</h2>
+            <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 leading-tight mb-3">
+              Batting Order Submissions
+            </h1>
+            <p className="text-gray-600 text-lg mb-6">Vote and discuss on the proposed batting strategies for the match</p>
+          </div>
+          
+          {!userHasSubmittedOrder && user && (
+            <Link 
+              href="/create-order"
+              className="mt-4 inline-flex items-center bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium"
+            >
+              <svg className="h-5 w-5 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+              </svg>
+              Create Your Batting Order
+            </Link>
+          )}
+        </div>
+      </div>
+
+      {!user && (
+        <InfoBanner variant="loggedOut" />
+      )}
+
       {userHasSubmittedOrder && user && (
         <InfoBanner />
       )}
 
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">All Batting Orders</h1>
-        
-        {!userHasSubmittedOrder && user && (
-          <Link 
-            href="/create-order"
-            className="bg-blue-600 text-white px-5 py-2 rounded-md hover:bg-blue-700 transition-colors"
-          >
-            Create Batting Order
-          </Link>
-        )}
-        
-        {!user && (
-          <div className="text-sm text-black bg-blue-50 p-2 rounded">
-            Sign in to create and vote on batting orders
-          </div>
-        )}
-      </div>
-
       {error && (
-        <div className="p-4 bg-red-100 border border-red-400 text-red-700 rounded mb-6">
-          {error}
+        <div className="p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg mb-6">
+          <div className="flex">
+            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            {error}
+          </div>
         </div>
       )}
 
       {loadingOrders ? (
-        <div className="flex justify-center items-center h-32">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        <div className="flex justify-center items-center h-48">
+          <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-600 border-t-transparent"></div>
         </div>
       ) : battingOrders.length === 0 ? (
-        <div className="bg-white p-8 rounded-lg shadow-md text-center">
-          <p className="text-lg text-black">No batting orders submitted yet.</p>
+        <div className="bg-white p-8 rounded-lg shadow-sm border border-gray-100 text-center">
+          <svg className="w-16 h-16 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+          </svg>
+          <p className="text-xl text-gray-700 font-medium mb-2">No batting orders yet</p>
+          <p className="text-gray-500 mb-4">Be the first to share your strategy!</p>
           {!userHasSubmittedOrder && user && (
-            <p className="mt-2 text-blue-600">
-              Be the first to create a batting order!
-            </p>
+            <Link 
+              href="/create-order"
+              className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
+            >
+              Create a batting order
+              <svg className="w-5 h-5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              </svg>
+            </Link>
           )}
         </div>
       ) : (
-        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <div className="grid gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3">
           {battingOrders.map((order) => (
             <BattingOrderCard
               key={order.id}
@@ -138,12 +162,15 @@ export default function Home() {
         </div>
       )}
       
-      <div className="mt-6 text-center">
+      <div className="mt-8 text-center">
         <button 
           onClick={fetchBattingOrders}
-          className="text-sm text-blue-600 hover:text-blue-800"
+          className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
           disabled={loadingOrders}
         >
+          <svg className="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
           {loadingOrders ? 'Refreshing...' : 'Refresh batting orders'}
         </button>
       </div>
