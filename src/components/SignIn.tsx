@@ -16,7 +16,7 @@ export default function SignIn() {
               className="rounded-full w-8 h-8" 
             />
           )}
-          <span className="text-sm font-medium">{user.displayName}</span>
+          <span className="text-sm font-medium text-black">{user.displayName}</span>
           <button
             onClick={logOut}
             className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors text-sm"
@@ -27,7 +27,7 @@ export default function SignIn() {
       ) : (
         <button
           onClick={signInWithGoogle}
-          className="flex items-center gap-2 px-4 py-2 bg-white text-gray-800 rounded-md border border-gray-300 hover:bg-gray-100 transition-colors"
+          className="flex items-center gap-2 px-4 py-2 bg-white text-black rounded-md border border-gray-300 hover:bg-gray-100 transition-colors"
         >
           <svg viewBox="0 0 24 24" width="16" height="16">
             <g transform="matrix(1, 0, 0, 1, 27.009001, -39.238998)">

@@ -9,9 +9,9 @@ export default function LoginPage() {
   const router = useRouter();
 
   useEffect(() => {
-    // Redirect to batting order page if user is already authenticated
+    // Redirect to home page if user is already authenticated
     if (!loading && user) {
-      router.push('/batting-order');
+      router.push('/');
     }
   }, [user, loading, router]);
 
@@ -30,7 +30,7 @@ export default function LoginPage() {
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 px-4">
       <div className="w-full max-w-md bg-white rounded-lg shadow-md p-8">
         <h1 className="text-2xl font-bold text-center mb-6">Ludicrous Batting Order</h1>
-        <p className="text-gray-600 text-center mb-8">Sign in to view and vote on the batting order</p>
+        <p className="text-gray-600 text-center mb-8">Sign in to view and vote on batting orders</p>
         
         <div className="flex justify-center">
           <button
